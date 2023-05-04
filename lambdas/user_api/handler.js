@@ -5,6 +5,10 @@ const responses = {
   "/dummy2": {
     message: "Dummy2 response"
   }
+  ,
+  "/dummy3": {
+    message: "Dummy3 response!!!"
+  }
 };
 
 exports.handler = async (event) => {

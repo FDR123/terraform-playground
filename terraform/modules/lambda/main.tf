@@ -47,7 +47,7 @@ resource "aws_api_gateway_resource" "resource" {
 
 
 resource "aws_iam_policy" "lambda_vpc_policy" {
-  name   = "LambdaVPCPolicy"
+  name = "LambdaVPCPolicy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -92,6 +92,7 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
   role       = aws_iam_role.lambda_execution_role.name
 }
 
+
 resource "aws_lambda_function" "lambdas" {
   for_each      = local.lambdas
   function_name = each.key
@@ -100,6 +101,9 @@ resource "aws_lambda_function" "lambdas" {
   role          = aws_iam_role.lambda_execution_role.arn
 
   filename = "${each.value.path}/package.zip"
+
+  source_code_hash = filebase64sha256("${each.value.path}/package.zip")
+
 
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -123,6 +127,8 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
 data "aws_caller_identity" "current" {}
 
 
+
+
 resource "aws_api_gateway_deployment" "deployment" {
   for_each = local.lambdas
 
@@ -130,7 +136,8 @@ resource "aws_api_gateway_deployment" "deployment" {
 
   # This triggers a new deployment whenever there's a change in the API Gateway
   triggers = {
-    redeployment = sha1(join(",", tolist([
+    
+        redeployment = sha1(join(",", tolist([
       jsonencode(aws_api_gateway_rest_api.api[each.key]),
       jsonencode(aws_api_gateway_resource.resource[each.key])
     ])))
@@ -144,7 +151,13 @@ resource "aws_api_gateway_deployment" "deployment" {
 resource "aws_api_gateway_stage" "stage" {
   for_each = local.lambdas
 
+
+
   deployment_id = aws_api_gateway_deployment.deployment[each.key].id
   rest_api_id   = aws_api_gateway_rest_api.api[each.key].id
   stage_name    = "prod"
+  lifecycle {
+    create_before_destroy = true
+  }
 }
+

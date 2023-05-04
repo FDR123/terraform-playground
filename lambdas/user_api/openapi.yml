@@ -41,3 +41,22 @@ paths:
         httpMethod: POST
         type: aws_proxy
         uri: ${lambda_integration_uri}
+  /dummy3:
+    get:
+      summary: Get dummy3 resource
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Dummy3 response
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: ${lambda_integration_uri}

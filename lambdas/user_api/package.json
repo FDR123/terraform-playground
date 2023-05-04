@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "npm install && node bundle.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "pg": "^8.10.0"
   },
   "devDependencies": {
+    "archiver": "^5.3.1",
     "serverless-ssm-fetch": "^2.0.0"
   }
 }
