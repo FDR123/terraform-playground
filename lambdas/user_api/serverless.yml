@@ -1,0 +1,38 @@
+service: my-service
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+  environment:
+    RDS_POSTGRES_ENDPOINT: ${ssm:/database/postgres/endpoint~true}
+    RDS_POSTGRES_PORT: ${ssm:/database/postgres/port}
+    RDS_POSTGRES_USERNAME: ${ssm:/database/postgres/username~true}
+    RDS_POSTGRES_PASSWORD: ${ssm:/database/postgres/password~true}
+    RDS_DATABASE_NAME: mypostgresdb
+
+functions:
+  favorites:
+    handler: handler.handler
+    events:
+      - http:
+          path: /favorites/{user_id}/{id}
+          method: get
+      - http:
+          path: /favorites/{user_id}/{id}
+          method: put
+      - http:
+          path: /favorites/{user_id}/{id}
+          method: delete
+      - http:
+          path: /favorites
+          method: post
+  vpc:
+    securityGroupIds:
+      - "Fn::ImportValue": ${ssm:/lambda/security_group_id~true}
+    subnetIds:
+      - "Fn::ImportValue": ${ssm:/subnet/private_1~true}
+      - "Fn::ImportValue": ${ssm:/subnet/private_2~true}
+
+
