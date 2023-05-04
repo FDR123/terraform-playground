@@ -1,0 +1,43 @@
+openapi: 3.0.1
+info:
+  title: Dummy API
+  version: 1.0.0
+paths:
+  /dummy1:
+    get:
+      summary: Get dummy1 resource
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Dummy1 response
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: ${lambda_integration_uri}
+  /dummy2:
+    get:
+      summary: Get dummy2 resource
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Dummy2 response
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: ${lambda_integration_uri}
